@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"myapi/models"
@@ -16,6 +17,18 @@ func HelloHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func PostArticleHandler(w http.ResponseWriter, req *http.Request) {
+	// 1. バイトスライスを用意する
+	// (後述)
+	var reqBodybuffer []byte
+
+	// 2. Read メソッドでリクエストボディを読み込む
+	if _, err := req.Body.Read(reqBodybuffer); !errors.Is(err, io.EOF) {
+		http.Error(w, "fail to read request body\n", http.StatusBadRequest)
+		return
+	}
+	// 3. ボディをCloseする
+	defer req.Body.Close()
+
 	article := models.Article1
 	jsonData, err := json.Marshal(article)
 	if err != nil {
