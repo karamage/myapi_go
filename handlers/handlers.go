@@ -18,8 +18,12 @@ func HelloHandler(w http.ResponseWriter, req *http.Request) {
 
 func PostArticleHandler(w http.ResponseWriter, req *http.Request) {
 	// 1. バイトスライスを用意する
-	// (後述)
-	var reqBodybuffer []byte
+	length, err := strconv.Atoi(req.Header.Get("Content-Length"))
+	if err != nil {
+		http.Error(w, "fail to read Content-Length\n", http.StatusBadRequest)
+		return
+	}
+	reqBodybuffer := make([]byte, length)
 
 	// 2. Read メソッドでリクエストボディを読み込む
 	if _, err := req.Body.Read(reqBodybuffer); !errors.Is(err, io.EOF) {
