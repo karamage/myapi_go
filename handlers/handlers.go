@@ -39,7 +39,7 @@ func PostArticleHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	article := models.Article1
+	article := reqArticle
 	jsonData, err := json.Marshal(article)
 	if err != nil {
 		http.Error(w, "fail to encode json\n", http.StatusInternalServerError)
