@@ -3,6 +3,7 @@ services:
 
   mysql:
     image: mysql:5.7 # MySQLのバージョンを指定
+    platform: linux/amd64
     container_name: db-for-go
     # MySQLの設定値を指定
     command:
@@ -17,6 +18,7 @@ services:
       MYSQL_DATABASE: ${DATABASE}
       MYSQL_USER: ${USERNAME}
       MYSQL_PASSWORD: ${USERPASS}
+      TZ: 'Asia/Tokyo'
 
     # コンテナの 3306 番ポートを、ローカルの 3306 番ポートにつなげる 
     ports:
