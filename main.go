@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	dbUser := "root"
+	dbUser := "sample"
 	dbPassword := "pass"
 	dbDatabase := "sampledb"
 	dbConn := fmt.Sprintf("%s:%s@/%s", dbUser, dbPassword, dbDatabase)
