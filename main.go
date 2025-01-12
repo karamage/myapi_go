@@ -18,7 +18,7 @@ func main() {
 	dbUser := "sample"
 	dbPassword := "pass"
 	dbDatabase := "sampledb"
-	dbConn := fmt.Sprintf("%s:%s@/%s", dbUser, dbPassword, dbDatabase)
+	dbConn := fmt.Sprintf("%s:%s@/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
 
 	db, err := sql.Open("mysql", dbConn)
 	if err != nil {
@@ -27,7 +27,7 @@ func main() {
 	defer db.Close()
 
 	const sqlStr = `
-		select title, contents, username, nice
+		select *
 		from articles;
 	`
 	rows, err := db.Query(sqlStr)
@@ -40,7 +40,15 @@ func main() {
 	articleArray := make([]models.Article, 0)
 	for rows.Next() {
 		var article models.Article
-		err := rows.Scan(&article.Title, &article.Contents, &article.UserName, &article.NiceNum)
+		var createdTime sql.NullTime
+
+		err := rows.Scan(&article.ID, &article.Title, &article.Contents,
+			&article.UserName, &article.NiceNum, &createdTime)
+
+		if createdTime.Valid {
+			article.CreatedAt = createdTime.Time
+		}
+
 		if err != nil {
 			fmt.Println(err)
 		} else {
