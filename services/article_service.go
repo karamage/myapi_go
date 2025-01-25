@@ -7,7 +7,11 @@ import (
 
 // AirticleDetailHandler で使うことを想定したサービス
 func GetArticleService(airticleID int) (models.Article, error) {
-	// TODO : sql.DB 型を手に入れて、変数 db に代入する
+	db, err := connectDB()
+	if err != nil {
+		return models.Article{}, err
+	}
+	defer db.Close()
 
 	// 1. repositories 層の SelectArticleDetail 関数を呼び出し、記事の詳細データを取得する
 	article, err := repositories.SelectArticleDetail(db, airticleID)
