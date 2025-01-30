@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"myapi/models"
+	"myapi/services"
 	"net/http"
 	"strconv"
 
@@ -51,8 +52,14 @@ func ArticleDetailHandler(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Invalid article ID", http.StatusBadRequest)
 		return
 	}
-	resString := fmt.Sprintf("Article No. %d\n", articleID)
-	io.WriteString(w, resString)
+
+	article, err := services.GetArticleService(articleID)
+	if err != nil {
+		http.Error(w, "Failed to get article", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(article)
 }
 
 func PostNiceHandler(w http.ResponseWriter, req *http.Request) {
