@@ -62,3 +62,24 @@ func GetArticleListService(page int) ([]models.Article, error) {
 
 	return articleList, nil
 }
+
+func PostNiceService(articleID int) (models.Article, error) {
+	db, err := connectDB()
+	if err != nil {
+		return models.Article{}, err
+	}
+	defer db.Close()
+
+	// 1. repositories 層の UpdateNiceNum 関数を呼び出し、指定IDの記事のいいね数を+1する
+	if err := repositories.UpdateNiceNum(db, articleID); err != nil {
+		return models.Article{}, err
+	}
+
+	// 2. 更新後の記事データを取得する
+	article, err := repositories.SelectArticleDetail(db, articleID)
+	if err != nil {
+		return models.Article{}, err
+	}
+
+	return article, nil
+}
