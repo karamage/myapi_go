@@ -21,10 +21,16 @@ func PostArticleHandler(w http.ResponseWriter, req *http.Request) {
 
 	if err := json.NewDecoder(req.Body).Decode(&reqArticle); err != nil {
 		http.Error(w, "fail to decode json\n", http.StatusBadRequest)
+		return
 	}
 
-	article := reqArticle
-	json.NewEncoder(w).Encode(article)
+	newArticle, err := services.PostArticleService(reqArticle)
+	if err != nil {
+		http.Error(w, "Failed to post article", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(newArticle)
 }
 
 func ArticleListHandler(w http.ResponseWriter, req *http.Request) {
