@@ -73,9 +73,33 @@ func ArticleDetailHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func PostNiceHandler(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "Posting Nice...\n")
+	articleID, err := strconv.Atoi(mux.Vars(req)["id"])
+	if err != nil {
+		http.Error(w, "Invalid article ID", http.StatusBadRequest)
+		return
+	}
+
+	article, err := services.PostNiceService(articleID)
+	if err != nil {
+		http.Error(w, "Failed to post nice", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(article)
 }
 
 func PostCommentHandler(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "Posting Comment...\n")
+	var comment models.Comment
+	if err := json.NewDecoder(req.Body).Decode(&comment); err != nil {
+		http.Error(w, "Invalid comment data", http.StatusBadRequest)
+		return
+	}
+
+	newComment, err := services.PostCommentService(comment)
+	if err != nil {
+		http.Error(w, "Failed to post comment", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(newComment)
 }
