@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"myapi/models"
 	"myapi/services"
@@ -48,8 +47,13 @@ func ArticleListHandler(w http.ResponseWriter, req *http.Request) {
 		page = 1
 	}
 
-	resString := fmt.Sprintf("Article List (page %d)\n", page)
-	io.WriteString(w, resString)
+	articleList, err := services.GetArticleListService(page)
+	if err != nil {
+		http.Error(w, "Failed to get article list", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(articleList)
 }
 
 func ArticleDetailHandler(w http.ResponseWriter, req *http.Request) {
