@@ -31,16 +31,11 @@ func GetArticleService(airticleID int) (models.Article, error) {
 	return article, nil
 }
 
-func PostArticleService(article models.Article) (models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return models.Article{}, err
-	}
-	defer db.Close()
+func (s *MyAppService) PostArticleService(article models.Article) (models.Article, error) {
 	var newArticle models.Article
 
-	// 1. repositories 層の InsertArticle 関数を呼び出し、記事データを保存する
-	if newArticle, err = repositories.InsertArticle(db, article); err != nil {
+	newArticle, err := repositories.InsertArticle(s.db, article)
+	if err != nil {
 		return models.Article{}, err
 	}
 
