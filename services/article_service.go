@@ -5,22 +5,15 @@ import (
 	"myapi/repositories"
 )
 
-// AirticleDetailHandler で使うことを想定したサービス
-func GetArticleService(airticleID int) (models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return models.Article{}, err
-	}
-	defer db.Close()
-
+func (s *MyAppService) GetArticleService(articleID int) (models.Article, error) {
 	// 1. repositories 層の SelectArticleDetail 関数を呼び出し、記事の詳細データを取得する
-	article, err := repositories.SelectArticleDetail(db, airticleID)
+	article, err := repositories.SelectArticleDetail(s.db, articleID)
 	if err != nil {
 		return models.Article{}, err
 	}
 
 	// 2. コメント一覧を取得する
-	commentList, err := repositories.SelectCommentList(db, airticleID)
+	commentList, err := repositories.SelectCommentList(s.db, articleID)
 	if err != nil {
 		return models.Article{}, err
 	}
