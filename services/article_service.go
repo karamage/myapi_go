@@ -35,15 +35,9 @@ func (s *MyAppService) PostArticleService(article models.Article) (models.Articl
 	return newArticle, nil
 }
 
-func GetArticleListService(page int) ([]models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return nil, err
-	}
-	defer db.Close()
-
+func (s *MyAppService) GetArticleListService(page int) ([]models.Article, error) {
 	// repositories 層の SelectArticleList 関数を呼び出し、指定ページの記事一覧を取得する
-	articleList, err := repositories.SelectArticleList(db, page)
+	articleList, err := repositories.SelectArticleList(s.db, page)
 	if err != nil {
 		return nil, err
 	}
@@ -51,20 +45,14 @@ func GetArticleListService(page int) ([]models.Article, error) {
 	return articleList, nil
 }
 
-func PostNiceService(articleID int) (models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return models.Article{}, err
-	}
-	defer db.Close()
-
+func (s *MyAppService) PostNiceService(articleID int) (models.Article, error) {
 	// 1. repositories 層の UpdateNiceNum 関数を呼び出し、指定IDの記事のいいね数を+1する
-	if err := repositories.UpdateNiceNum(db, articleID); err != nil {
+	if err := repositories.UpdateNiceNum(s.db, articleID); err != nil {
 		return models.Article{}, err
 	}
 
 	// 2. 更新後の記事データを取得する
-	article, err := repositories.SelectArticleDetail(db, articleID)
+	article, err := repositories.SelectArticleDetail(s.db, articleID)
 	if err != nil {
 		return models.Article{}, err
 	}
