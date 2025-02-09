@@ -1,4 +1,4 @@
-package handlers
+package controllers
 
 import (
 	"encoding/json"
@@ -10,6 +10,14 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
+type MyAppController struct {
+	service *services.MyAppService
+}
+
+func NewMyAppController(service *services.MyAppService) *MyAppController {
+	return &MyAppController{service: service}
+}
 
 func HelloHandler(w http.ResponseWriter, req *http.Request) {
 	io.WriteString(w, "Hello, world!\n")
