@@ -10,8 +10,13 @@ import (
 )
 
 func main() {
-	var service *services.MyAppService // TODO
-	con := controllers.NewMyAppController(service)
+	db, err := services.ConnectDB()
+	if err != nil {
+		log.Println("failed to connect db")
+		return
+	}
+	ser := services.NewMyAppService(db)
+	con := controllers.NewMyAppController(ser)
 
 	r := mux.NewRouter()
 
