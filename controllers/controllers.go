@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"io"
+	"myapi/controllers/services"
 	"myapi/models"
-	"myapi/services"
 	"net/http"
 	"strconv"
 
@@ -12,10 +12,10 @@ import (
 )
 
 type MyAppController struct {
-	service *services.MyAppService
+	service services.MyAppServicer
 }
 
-func NewMyAppController(service *services.MyAppService) *MyAppController {
+func NewMyAppController(service services.MyAppServicer) *MyAppController {
 	return &MyAppController{service: service}
 }
 
@@ -87,7 +87,7 @@ func (c *MyAppController) PostNiceHandler(w http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	article, err := c.service.PostNiceService(articleID)
+	article, err := c.service.PostNiceService(models.Article{ID: articleID})
 	if err != nil {
 		http.Error(w, "Failed to post nice", http.StatusInternalServerError)
 		return

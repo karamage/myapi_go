@@ -45,17 +45,17 @@ func (s *MyAppService) GetArticleListService(page int) ([]models.Article, error)
 	return articleList, nil
 }
 
-func (s *MyAppService) PostNiceService(articleID int) (models.Article, error) {
+func (s *MyAppService) PostNiceService(article models.Article) (models.Article, error) {
 	// 1. repositories 層の UpdateNiceNum 関数を呼び出し、指定IDの記事のいいね数を+1する
-	if err := repositories.UpdateNiceNum(s.db, articleID); err != nil {
+	if err := repositories.UpdateNiceNum(s.db, article.ID); err != nil {
 		return models.Article{}, err
 	}
 
 	// 2. 更新後の記事データを取得する
-	article, err := repositories.SelectArticleDetail(s.db, articleID)
+	updatedArticle, err := repositories.SelectArticleDetail(s.db, article.ID)
 	if err != nil {
 		return models.Article{}, err
 	}
 
-	return article, nil
+	return updatedArticle, nil
 }
